@@ -20,5 +20,22 @@ wow: not wow
 -           <-- *End of area to read denoted with a second dash;*
 ```
 
+**RESULT**
+
+Python dictionary:
+
+```
+{
+  {
+     'welcome': 'hello world! Hello World!'
+  },
+  {
+     'i am a key': 'i am a value'
+  },
+  {
+     'wow': 'not wow'
+  }
+}
+```
 
 
