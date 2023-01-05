@@ -26,15 +26,9 @@ Python dictionary:
 
 ```
 {
-  {
-     'welcome': 'hello world! Hello World!'
-  },
-  {
-     'i am a key': 'i am a value'
-  },
-  {
-     'wow': 'not wow'
-  }
+   'welcome': 'hello world! Hello World!',
+   'i am a key': 'i am a value',
+   'wow': 'not wow'
 }
 ```
 
