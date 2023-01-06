@@ -34,30 +34,52 @@ class Parser:
         else:
             return None
 
-    @staticmethod
-    def split_line(line: str) -> tuple:
-        extra_space: int = line.find(':') + 1
-
-        if line[extra_space] == ' ':
-            line = line[:extra_space] + line[extra_space + 1:]
-
+    def split_line(self, line: str) -> tuple:
         key, value = line.split(':', 1)
 
-        while value[-1] == ' ':
-            value = value[:-1]
-        while key[-1] == ' ':
-            key = key[:-1]
-        while key[0] == ' ':
-            key = key[1:]
-        while value[0] == ' ':
-            value = value[1:]
+        key = key.strip()
+        value = value.strip()
 
-        casted_value = Parser.check_number(value)
+        casted_value = self.check_number(value)
 
         if casted_value:
             value = casted_value
 
         return key, value
+
+    def main_parser(self, line):
+        try:
+            key, value = self.split_line(line)
+
+            if isinstance(value, str):
+                final_list: list = []
+                if value[0] == '/':
+                    modif_val: str = value[1:]
+
+                    end_index: int = modif_val.find('/')
+
+                    if end_index == -1:
+                        print("Missing closing symbol for list")
+                        return {}
+
+                    modif_val = modif_val[:end_index]
+
+                    modif_values: list = modif_val.split(',')
+
+                    final_list = [k.strip() for k in modif_values]
+
+                    for idx, item in enumerate(final_list):
+                        casted_num: int = self.check_number(item)
+                        if casted_num:
+                            final_list[idx] = casted_num
+
+                    value = final_list
+
+            return key, value
+
+        except (ValueError, IndexError):
+            print("Missing value or key in file")
+            return None
 
     def parse(self) -> dict:
         """
@@ -65,9 +87,11 @@ class Parser:
 
         :return: Python dictionary.
         """
+
         scan_active: bool = False
         is_comment: bool = False
         start_of_line: bool = False
+
         line: str = ""
         result: dict = {}
 
@@ -86,10 +110,9 @@ class Parser:
                         self.next()
                         continue
 
-                    try:
-                        key, value = self.split_line(line)
-                    except (ValueError, IndexError):
-                        print("Missing value or key in file")
+                    key, value = self.main_parser(line)
+
+                    if not value:
                         return {}
 
                     result[key] = value
@@ -109,7 +132,11 @@ class Parser:
                     is_comment = False
 
                     if line:
-                        key, value = self.split_line(line)
+                        key, value = self.main_parser(line)
+
+                        if not value:
+                            return {}
+
                         result[key] = value
                         line = ""
 
