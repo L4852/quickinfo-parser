@@ -1,3 +1,6 @@
+import pdb
+
+
 class Parser:
     def __init__(self, source: str):
         self.source: str = source
@@ -9,6 +12,30 @@ class Parser:
         "Advance to the next character in the source text if not at end, else sets char to None."
         self.index += 1
         self.char = self.source[self.index] if self.index < len(self.source) else None
+
+    @staticmethod
+    def check_number(string_value: str):
+        is_int: bool = False
+        is_float: bool = False
+
+        try:
+            float(string_value)
+            is_float = True
+            try:
+                int(string_value)
+                is_int = True
+                is_float = False
+            except ValueError:
+                is_int = False
+        except ValueError:
+            is_int = False
+
+        if is_int:
+            return int(string_value)
+        elif is_float:
+            return float(string_value)
+        else:
+            return None
 
     @staticmethod
     def split_line(line: str) -> tuple:
@@ -23,13 +50,15 @@ class Parser:
             value = value[:-1]
         while key[-1] == ' ':
             key = key[:-1]
-        try:
-            while key[0] == ' ':
-                key = key[1:]
-        except IndexError:
-            print('=', key, '=')
+        while key[0] == ' ':
+            key = key[1:]
         while value[0] == ' ':
             value = value[1:]
+
+        casted_value = Parser.check_number(value)
+
+        if casted_value:
+            value = casted_value
 
         return key, value
 
@@ -48,7 +77,11 @@ class Parser:
         while self.char is not None:
             if scan_active and not is_comment:
                 if self.char == '-':
-                    scan_active = False
+                    self.next()
+                    if self.char == '\n':
+                        scan_active = False
+                    else:
+                        line += f'-{self.char}'
                 elif self.char == '#':
                     is_comment = True
                 elif self.char == '\n':
@@ -56,7 +89,11 @@ class Parser:
                         self.next()
                         continue
 
-                    key, value = self.split_line(line)
+                    try:
+                        key, value = self.split_line(line)
+                    except (ValueError, IndexError):
+                        print("Missing value or key in file")
+                        return {}
 
                     result[key] = value
 
@@ -67,15 +104,22 @@ class Parser:
                 self.next()
             else:
                 if not is_comment:
-                    if self.char == '-':
+                    if self.char == '-' and not line:
                         scan_active = True
+                    if self.char == '#':
+                        is_comment = True
                 elif self.char == '\n':
                     is_comment = False
 
                     if line:
                         key, value = self.split_line(line)
                         result[key] = value
+                        line = ""
 
                 self.next()
+
+        if not result:
+            print("File start marker missing")
+            return {}
 
         return result
