@@ -1,17 +1,26 @@
 class Parser:
     def __init__(self, source: str):
-        self.source: str = source
-        self.index: int = -1
-        self.char: str = ""
-        self.next()
+        self._source: str = source
+        self._index: int = -1
+        self._char: str = ""
+        self._next()
 
-    def next(self) -> None:
+    def get_index(self):
+        return self._index
+
+    def get_source(self):
+        return self._source
+
+    def get_current_char(self):
+        return self._char
+
+    def _next(self) -> None:
         "Advance to the next character in the source text if not at end, else sets char to None."
-        self.index += 1
-        self.char = self.source[self.index] if self.index < len(self.source) else None
+        self._index += 1
+        self._char = self._source[self._index] if self._index < len(self._source) else None
 
     @staticmethod
-    def check_number(string_value: str):
+    def _check_if_number(string_value: str):
         is_int: bool = False
         is_float: bool = False
 
@@ -34,22 +43,22 @@ class Parser:
         else:
             return None
 
-    def split_line(self, line: str) -> tuple:
+    def _split_line(self, line: str) -> tuple:
         key, value = line.split(':', 1)
 
         key = key.strip()
         value = value.strip()
 
-        casted_value = self.check_number(value)
+        casted_value = self._check_if_number(value)
 
         if casted_value:
             value = casted_value
 
         return key, value
 
-    def main_parser(self, line):
+    def _main_parser(self, line):
         try:
-            key, value = self.split_line(line)
+            key, value = self._split_line(line)
 
             if isinstance(value, str):
                 final_list: list = []
@@ -69,7 +78,7 @@ class Parser:
                     final_list = [k.strip() for k in modif_values]
 
                     for idx, item in enumerate(final_list):
-                        casted_num: int = self.check_number(item)
+                        casted_num: int = self._check_if_number(item)
                         if casted_num:
                             final_list[idx] = casted_num
 
@@ -95,22 +104,22 @@ class Parser:
         line: str = ""
         result: dict = {}
 
-        while self.char is not None:
+        while self._char is not None:
             if scan_active and not is_comment:
-                if self.char == '-':
-                    self.next()
-                    if self.char == '\n':
+                if self._char == '-':
+                    self._next()
+                    if self._char == '\n':
                         scan_active = False
                     else:
-                        line += f'-{self.char}'
-                elif self.char == '#':
+                        line += f'-{self._char}'
+                elif self._char == '#':
                     is_comment = True
-                elif self.char == '\n':
+                elif self._char == '\n':
                     if not line:
-                        self.next()
+                        self._next()
                         continue
 
-                    key, value = self.main_parser(line)
+                    key, value = self._main_parser(line)
 
                     if not value:
                         return {}
@@ -118,21 +127,21 @@ class Parser:
                     result[key] = value
 
                     line = ""
-                elif self.char not in '\t':
-                    line += self.char
+                elif self._char not in '\t':
+                    line += self._char
 
-                self.next()
+                self._next()
             else:
                 if not is_comment:
-                    if self.char == '-' and not line:
+                    if self._char == '-' and not line:
                         scan_active = True
-                    if self.char == '#':
+                    if self._char == '#':
                         is_comment = True
-                elif self.char == '\n':
+                elif self._char == '\n':
                     is_comment = False
 
                     if line:
-                        key, value = self.main_parser(line)
+                        key, value = self._main_parser(line)
 
                         if not value:
                             return {}
@@ -140,7 +149,7 @@ class Parser:
                         result[key] = value
                         line = ""
 
-                self.next()
+                self._next()
 
         if not result:
             print("File start marker missing")
