@@ -58,6 +58,60 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result['message'], "Hello World!")
         self.assertEqual(result2['message'], "Hello World!")
 
+    def test_int(self):
+        def test_list(self):
+            parser = Parser(
+                """
+                -
+                myvar : 8
+                -
+                """
+            )
+
+            result = parser.parse()
+
+            self.assertEqual(result['myvar'], 8)
+
+    def test_float(self):
+        def test_list(self):
+            parser = Parser(
+                """
+                -
+                myvar : 8.5
+                -
+                """
+            )
+
+            result = parser.parse()
+
+            self.assertEqual(result['myvar'], 8.5)
+
+    def test_list(self):
+        parser = Parser(
+            """
+            -
+            mylist : / a, b, c /
+            -
+            """
+        )
+
+        result = parser.parse()
+
+        self.assertEqual(result['mylist'], ['a', 'b', 'c'])
+
+    def test_list_nested(self):
+        parser = Parser(
+            """
+            -
+            mylist : / a, b, / c, d, e / /
+            -
+            """
+        )
+
+        result = parser.parse()
+
+        self.assertEqual(result['mylist'], ['a', 'b', ['c', 'd', 'e']])
+
 
 if __name__ == '__main__':
     unittest.main()
