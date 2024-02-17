@@ -16,7 +16,7 @@ welcome: hello world! Hello World!
 i-am-a-key: i-am-a-value                 # Comments can be placed anywhere after values!
 wow: 125                                 # Integers and floats can be converted
 not wow: 95.23                           #
-grouped: / abc, def, 12, 59.2, xyz /     # '/' can be used to start and end a list, with commas separating values.
+grouped: / abc, def, 12, 59.2, xyz \     # '/' can be used to start a list, and '\' to end a list, with commas separating values.
 -                                        <-- * End of area to read denoted with a second dash; *
 ```
 
