@@ -215,7 +215,7 @@ class Parser:
                     value = parse_data
 
                 # Return error if quotes used in input
-                if '"' in value or '"' in key:
+                if '"' in value or '"' in key or "'" in key:
                     return ParseResult(
                         None,
                         InvalidCharacterError(
