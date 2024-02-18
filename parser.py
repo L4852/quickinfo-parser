@@ -215,7 +215,7 @@ class Parser:
                     value = parse_data
 
                 # Return error if quotes used in input
-                if '"' in value:
+                if '"' in value or '"' in key:
                     return ParseResult(
                         None,
                         InvalidCharacterError(
@@ -291,12 +291,11 @@ class Parser:
                 self._next()
 
                 # Check if the document has ended before encountering the closing dash.
-                if self._char == '\0':
-                    if scan_active:
-                        DocumentBoundaryError(
-                            self._get_relative_position(),
-                            "The file start or end marker '-' is missing."
-                        ).print_error()
+                if self._char == '\0' and scan_active:
+                    DocumentBoundaryError(
+                        self._get_relative_position(),
+                        "The file start or end marker '-' is missing."
+                    ).print_error()
             else:
                 # Check if starting '-' dash found, if so, start the document parsing.
                 if not is_comment:
