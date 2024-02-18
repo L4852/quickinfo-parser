@@ -40,3 +40,16 @@ Python dictionary:
    'as_string': '500'
 }
 ```
+
+**Possible Error Types**
+
+Several error types are handled in order to make it easier to debug mistakes in your input:
+
+**EXAMPLE:**
+```
+DocumentBoundaryError: The file start or end marker '-' is missing. | [ line 5, col 1 ]
+DuplicateKeyError: A dictionary key must be unique. | [ line 2, col 29 ]
+InvalidCharacterError: You have passed in an invalid character in the input. | [ line 1, col 22 ]
+MismatchedKeyValueError: Missing value or key in file | [ line 2, col 33 ]
+ListError: List brackets may be mismatched (missing closing bracket) | [ line 3, col 47 ]
+```
