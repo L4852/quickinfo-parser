@@ -1,7 +1,4 @@
-import os.path
-
 from parser import Parser
-import json
 
 SHELL_VERSION = (0, 1, 0)
 
