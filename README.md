@@ -34,6 +34,9 @@ Python dictionary:
    'key': 'value',
    'integers': 125,
    'floats': 95.23
-   'lists': ['abc', 'def', 12, 59.2, 'xyz']
+   'lists': ['abc', 'def', 12, 59.2, 'xyz'],
+   'nested_list': ['a', 'b', 'e', 'f', ['c', 'd']],
+   'as_number': 500,
+   'as_string': '500'
 }
 ```
